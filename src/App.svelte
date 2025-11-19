@@ -1,33 +1,28 @@
 <script lang="ts">
-  import svelteLogo from "./assets/svelte.svg";
-  import viteLogo from "/vite.svg";
-  import Counter from "./lib/Counter.svelte";
   import Camera from "./lib/Camera.svelte";
 </script>
 
-<main>
-  <div>
+<main class="app-shell">
+  <section class="camera-panel">
     <Camera />
-  </div>
-  <div class="card">
-    <Counter />
-  </div>
+  </section>
+  <section>
+    <h1 style="color: black;">Welcome to the true side of the internet</h1>
+  </section>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .app-shell {
+    min-height: 100vh;
+    padding: 3.5rem clamp(1.5rem, 5vw, 5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
+
+  .camera-panel {
+    display: flex;
+    justify-content: center;
   }
 </style>

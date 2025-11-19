@@ -11,6 +11,9 @@ importers:
 
   .:
     devDependencies:
+      '@lucide/svelte':
+        specifier: ^0.547.0
+        version: 0.547.0(svelte@5.43.10)
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.2.1
         version: 6.2.1(rolldown-vite@7.2.2(@types/node@24.10.1))(svelte@5.43.10)
@@ -59,6 +62,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lucide/svelte@0.547.0':
+    resolution: {integrity: sha512-VOlkC/L6cU9j5f7WEULyQ0yBJii0oGNZlflxdt8LK2hkRF/5DklYLfrrL4Kte+MvMencKPD6cFtLL7J1cDIN4w==}
+    peerDependencies:
+      svelte: ^5
 
   '@napi-rs/wasm-runtime@1.0.7':
     resolution: {integrity: sha512-SeDnOO0Tk7Okiq6DbXmmBODgOAb9dp9gjlphokTUxmt8U3liIP1ZsozBahH69j/RJv+Rfs6IwUKHTgQYJ/HBAw==}
@@ -479,6 +487,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@lucide/svelte@0.547.0(svelte@5.43.10)':
+    dependencies:
+      svelte: 5.43.10
 
   '@napi-rs/wasm-runtime@1.0.7':
     dependencies:
