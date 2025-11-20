@@ -14,10 +14,14 @@
       <Camera onFlashlightToggle={handleFlashlight} />
     </section>
     <section class="intro-section">
-      <h1>Welcome to the <span class="highlight">True side</span> of the Internet</h1>
+      <h1>
+        Welcome to the <span class="highlight">True side</span> of the Internet
+      </h1>
       <p class="privacy-note">
-        Your privacy matters. This website <span class="highlight-red">does not</span> collect or store any data from your camera.
-        Everything happens locally in your browser.
+        Your privacy matters. This website <span class="highlight-red"
+          >does not</span
+        > collect or store any data from your camera. Everything happens locally
+        in your browser.
       </p>
     </section>
   </main>
@@ -66,7 +70,7 @@
     line-height: 1.6;
     max-width: 600px;
   }
-  
+
   .intro-section {
     display: flex;
     flex-direction: column;
@@ -77,5 +81,11 @@
   .app-background.flashlight-active .intro-section {
     opacity: 0;
     pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .intro-section {
+      display: none;
+    }
   }
 </style>
