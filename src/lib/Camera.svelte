@@ -243,10 +243,9 @@
             <CameraIcon size={24} />
           </div>
           <div class="feature-text">
-            <h3>True Mirror</h3>
+            <h3>Capturing Image</h3>
             <p>
-              See yourself as others see you. Non-reversed video feed that shows
-              your true appearance.
+              Take a picture and download it. 
             </p>
           </div>
         </div>
@@ -256,10 +255,9 @@
             <CameraOff size={24} />
           </div>
           <div class="feature-text">
-            <h3>Liar Mirror</h3>
+            <h3>Liar/True Mirror</h3>
             <p>
-              The traditional mirror view you're used to. Reversed reflection
-              that comforts your brain.
+              Both reflected and True image. 
             </p>
           </div>
         </div>
@@ -271,12 +269,14 @@
           <div class="feature-text">
             <h3>Screen Flash</h3>
             <p>
-              Illuminates your face using the screen brightness for better
-              lighting in dark environments.
+              Turn on if you are in a dark place. Then take a picture for better view. 
             </p>
           </div>
         </div>
       </div>
+      <p class="privacy-note">
+        This website <b>does not</b> collect any camera data. 
+      </p>
     </div>
   </div>
 {/if}

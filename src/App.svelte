@@ -17,11 +17,14 @@
       <h1>
         Welcome to the <span class="highlight">True side</span> of the Internet
       </h1>
-      <p class="privacy-note">
-        Your privacy matters. This website <span class="highlight-red"
-          >does not</span
-        > collect or store any data from your camera. Everything happens locally
-        in your browser.
+      <p class="links">
+        <a href="https://roshi.ink/blog/svelte-first-try" target="_blank">Read more on Blog</a>
+        •
+        <a
+          href="https://github.com/roshidoni/mirror"
+          target="_blank"
+          rel="noopener noreferrer">Source on GitHub</a
+        >
       </p>
     </section>
   </main>
@@ -69,6 +72,24 @@
     font-size: 1.1rem;
     line-height: 1.6;
     max-width: 600px;
+  }
+
+  .links {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+
+  .links a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .links a:hover {
+    border-bottom-color: currentColor;
   }
 
   .intro-section {
