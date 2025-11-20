@@ -18,7 +18,9 @@
         Welcome to the <span class="highlight">True side</span> of the Internet
       </h1>
       <p class="links">
-        <a href="https://roshi.ink/blog/svelte-first-try" target="_blank">Read more on Blog</a>
+        <a href="https://roshi.ink/blog/svelte-first-try" target="_blank"
+          >Read more on Blog</a
+        >
         •
         <a
           href="https://github.com/roshidoni/mirror"
@@ -59,19 +61,6 @@
     background: linear-gradient(120deg, #ff3b6a, #ff9068);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .highlight-red {
-    color: #ff3b6a;
-    font-weight: 600;
-  }
-
-  .privacy-note {
-    color: var(--text-color);
-    opacity: 0.7;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-width: 600px;
   }
 
   .links {

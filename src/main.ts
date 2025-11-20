@@ -10,18 +10,8 @@ const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST as string
 if (typeof window !== 'undefined' && POSTHOG_KEY) {
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
-    capture_pageview: false,
-    capture_pageleave: false,
-    capture_exceptions: true
   })
 
-  // Capture initial pageview
-  posthog.capture('$pageview')
-
-  // Optionally capture pageleave
-  window.addEventListener('beforeunload', () => {
-    posthog.capture('$pageleave')
-  })
 }
 
 const app = mount(App, {
