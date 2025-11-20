@@ -1,6 +1,13 @@
 <script lang="ts">
-  import { Camera as CameraIcon, CameraOff, Flashlight } from "@lucide/svelte";
+  import {
+    Camera as CameraIcon,
+    CameraOff,
+    Flashlight,
+    Info,
+    X,
+  } from "@lucide/svelte";
   import { onDestroy } from "svelte";
+  import { captureAndSaveFrame } from "./utils";
 
   let errorMsg = "";
   let sourceObject: HTMLVideoElement | null = null;
@@ -9,6 +16,9 @@
   let requesting = false;
   let liarMode = false;
   let flashlightOn = false;
+  let showInfoModal = false;
+
+  export let onFlashlightToggle: (active: boolean) => void = () => {};
 
   $: buttonLabel = requesting
     ? "Requesting..."
@@ -92,61 +102,27 @@
     if (!sourceObject || !isStreaming) {
       return;
     }
-
-    const video = sourceObject;
-    const width = video.videoWidth;
-    const height = video.videoHeight;
-
-    if (!width || !height) {
-      return;
-    }
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const context = canvas.getContext("2d");
-
-    if (!context) {
-      return;
-    }
-
-    if (liarMode) {
-      context.translate(width, 0);
-      context.scale(-1, 1);
-    }
-
-    context.drawImage(video, 0, 0, width, height);
-
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        return;
-      }
-
-      const blobUrl = URL.createObjectURL(blob);
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `true-mirror-${timestamp}.png`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(blobUrl);
-    }, "image/png");
+    captureAndSaveFrame(sourceObject, liarMode);
   }
-
   onDestroy(() => {
     stopCamera();
   });
 
   function toggleFlashlight() {
     flashlightOn = !flashlightOn;
+    onFlashlightToggle?.(flashlightOn);
+  }
+
+  function toggleInfoModal() {
+    showInfoModal = !showInfoModal;
   }
 </script>
 
-<div class="camera-root" data-streaming={isStreaming}>
+<div
+  class="camera-root"
+  data-streaming={isStreaming}
+  data-flashlight={flashlightOn}
+>
   <div class="camera-status-bar">
     <div class="status-left">
       <span class:live={isStreaming} class="status-indicator" aria-hidden="true"
@@ -174,6 +150,15 @@
   {/if}
 
   <div class="camera-controls">
+    <button
+      class="info-button"
+      type="button"
+      aria-label="Camera Info"
+      on:click={toggleInfoModal}
+    >
+      <Info size={20} strokeWidth={2} />
+    </button>
+
     <div class="control-row">
       <div class="control-slot control-left">
         <div class="left-controls">
@@ -234,6 +219,68 @@
   </div>
 </div>
 
+{#if showInfoModal}
+  <div class="modal-backdrop" on:click={toggleInfoModal} role="presentation">
+    <div
+      class="modal-content"
+      on:click|stopPropagation
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        class="close-button"
+        on:click={toggleInfoModal}
+        aria-label="Close info"
+      >
+        <X size={24} />
+      </button>
+
+      <h2>Camera Features</h2>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <CameraIcon size={24} />
+          </div>
+          <div class="feature-text">
+            <h3>True Mirror</h3>
+            <p>
+              See yourself as others see you. Non-reversed video feed that shows
+              your true appearance.
+            </p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <CameraOff size={24} />
+          </div>
+          <div class="feature-text">
+            <h3>Liar Mirror</h3>
+            <p>
+              The traditional mirror view you're used to. Reversed reflection
+              that comforts your brain.
+            </p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <Flashlight size={24} />
+          </div>
+          <div class="feature-text">
+            <h3>Screen Flash</h3>
+            <p>
+              Illuminates your face using the screen brightness for better
+              lighting in dark environments.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
   .camera-root {
     position: relative;
@@ -245,19 +292,6 @@
     /* background: #030306; */
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 25px 75px rgba(5, 5, 10, 0.65);
-  }
-
-  .camera-root::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      circle at 25% 20%,
-      rgba(255, 255, 255, 0.14),
-      transparent 55%
-    );
-    opacity: 0.35;
   }
 
   .camera-video {
@@ -403,9 +437,9 @@
   .icon-button:hover,
   .icon-button:focus-visible {
     transform: translateY(-2px);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.18),
-        0 12px 28px rgba(0, 0, 0, 0.6);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.18),
+      0 12px 28px rgba(0, 0, 0, 0.6);
   }
 
   .icon-button[data-active="true"] {
@@ -585,6 +619,152 @@
 
     .camera-status-bar {
       top: 2rem;
+    }
+
+    .camera-root[data-flashlight="true"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.9);
+      animation: flashlight 2s infinite;
+      z-index: 20;
+      pointer-events: none;
+    }
+  }
+
+  .info-button {
+    position: absolute;
+    top: -3.5rem;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 5;
+  }
+
+  .info-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .modal-content {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .close-button {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 2rem 0;
+    color: #fff;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .feature-icon {
+    background: rgba(255, 255, 255, 0.05);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff3b6a;
+    flex-shrink: 0;
+  }
+
+  .feature-text h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .feature-text p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 </style>
